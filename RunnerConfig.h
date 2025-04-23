@@ -17,7 +17,7 @@ using namespace std;
 #define CONFIG_FILE "/etc/tobii.cfg"
 #define CFG_SCREEN_NAME "screen"
 #define CFG_GAZE_POINTER_SIZE "gaze_pointer_size"
-#define DEFAULT_CFG_GAZE_POINTER_SIZE 100
+#define DEFAULT_CFG_GAZE_POINTER_SIZE 10
 
 class RunnerConfig {
 public:

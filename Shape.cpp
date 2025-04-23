@@ -3,7 +3,7 @@
 //
 
 #include "Shape.h"
-
+#include <X11/extensions/XTest.h>
 Window ShapeWindows::show(int width, int height) {
     m_width = width;
     m_height = height;
@@ -142,7 +142,8 @@ void ShapeWindows::removeBorderCircle() {
 }
 
 void ShapeWindows::move(int x, int y) {
-    XMoveWindow(m_display, m_window, x - (m_width / 2), y - (m_height / 2));
+//    XMoveWindow(m_display, m_window, x - (m_width / 2), y - (m_height / 2));
+    XTestFakeMotionEvent (m_display, 0, x - (m_width / 2), y - (m_height / 2), CurrentTime);
     XFlush(m_display);
 }
 

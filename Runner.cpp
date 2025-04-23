@@ -2,6 +2,7 @@
 // Created by hector on 15-04-19.
 //
 
+#include <array>
 #include "Runner.h"
 #include "RunnerConfig.h"
 
