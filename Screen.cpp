@@ -2,6 +2,7 @@
 // Created by Hector Oliveros on 15-04-19.
 
 #include <utility>
+#include <array>
 #include "Screen.h"
 
 
