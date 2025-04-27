@@ -12,8 +12,6 @@
 #include <string>
 #include <cstring>
 #include <thread>
-#include "Screen.h"
-#include "Shape.h"
 #include "RunnerConfig.h"
 
 using namespace std;
@@ -52,9 +50,6 @@ private:
     tobii_device_t *device;
     tobii_api_t *api;
     bool emulateHeadPose = false;
-    static Display *m_pDisplay;
-    static ScreenManager *m_screenManager;
-    static ShapeWindows *m_shape;
     RunnerConfig *m_cfg;
 };
 

@@ -5,6 +5,15 @@
 #include <array>
 #include "Runner.h"
 #include "RunnerConfig.h"
+#include <X11/extensions/XTest.h>
+
+int xcal=0;
+int ycal=0;
+auto x=0;
+auto y=0;
+auto width=1366;
+auto height=768;
+Display *dpy = NULL;
 
 Runner::Runner(RunnerConfig *cfg) {
     m_cfg = cfg;
@@ -17,11 +26,6 @@ int Runner::start() {
     return 1;
 }
 
-void Runner::initUI() {
-    m_screenManager = new ScreenManager(m_cfg->getSelectedScreen(), emulateHeadPose);
-    m_shape = new ShapeWindows();
-    m_shape->show(m_cfg->getGazePointerSize(), m_cfg->getGazePointerSize());
-}
 
 tobii_device_t *Runner::initDevice() {
     tobii_error_t error = tobii_api_create(&api, nullptr, nullptr);
@@ -40,13 +44,18 @@ tobii_device_t *Runner::initDevice() {
 
 }
 
+void Runner::initUI() {
+    setenv("DISPLAY",":0",1);
+    dpy = XOpenDisplay (NULL);
+}
+
 void Runner::destroy() {
     tobii_gaze_point_unsubscribe(device);
     tobii_head_pose_unsubscribe(device);
     tobii_device_destroy(device);
     tobii_api_destroy(api);
     /* close connection to m_display */
-    XCloseDisplay(m_pDisplay);
+    XCloseDisplay(dpy);
 
 }
 
@@ -54,7 +63,6 @@ void Runner::setup() {
     initDevice();
     subscribe();
     initUI();
-
 }
 
 void Runner::loop() {
@@ -108,14 +116,16 @@ void Runner::headPoseCallback(tobii_head_pose_t const *head_pose, void *user_dat
 }
 
 void Runner::gazePointCallback(tobii_gaze_point_t const *gaze_point, void *user_data) {
+
     if (gaze_point->validity == TOBII_VALIDITY_VALID) {
-        printf("Gaze point: %lf, %lf\n", gaze_point->position_xy[0], gaze_point->position_xy[1]);
-        auto coord = m_screenManager->relativePointToCoor(gaze_point->position_xy[0], gaze_point->position_xy[1]);
-        printf("Gaze point: %d, %d\n", coord[0], coord[1]);
-        m_shape->move(coord[0], coord[1]);
+        //printf("Gaze point: %lf, %lf\n",gaze_point->position_xy[0], gaze_point->position_xy[1]);
+        
+        x=int(width * gaze_point->position_xy[0]);
+        y=int(height * gaze_point->position_xy[1]);
+        if (x<0 && x<xcal) xcal=x;
+        if (y<0 && y<ycal) ycal=y;
+        printf("Point: %d, %d : %d, %d\n", x-xcal, y-ycal, xcal, ycal);
+        XTestFakeMotionEvent (dpy, 0, x, y, CurrentTime);
+        XFlush(dpy);
     }
 }
-
-Display *Runner::m_pDisplay = nullptr;
-ScreenManager *Runner::m_screenManager = nullptr;
-ShapeWindows *Runner::m_shape = nullptr;
