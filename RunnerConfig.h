@@ -16,8 +16,6 @@ using namespace std;
 
 #define CONFIG_FILE "/etc/tobii.cfg"
 #define CFG_SCREEN_NAME "screen"
-#define CFG_GAZE_POINTER_SIZE "gaze_pointer_size"
-#define DEFAULT_CFG_GAZE_POINTER_SIZE 10
 
 class RunnerConfig {
 public:
@@ -29,13 +27,9 @@ public:
 
     void setSelectedScreen(const string &mSelectedScreen);
 
-    int getGazePointerSize() const;
-
-    void setGazePointerSize(int mGazePointerSize);
 
 private:
     string m_selectedScreen;
-    int m_gazePointerSize;
 
     string loadField(const char *fieldName, Config *cfg);
 };
